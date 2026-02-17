@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --vintage-bg: #FFF1E8;
+  --vintage-accent: #D39A6A;
+  --vintage-primary: #9A5A2E;
+  --vintage-text: #3E1F0F;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--vintage-bg);
+  color: var(--vintage-text);
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Playfair Display', serif;
+  color: var(--vintage-primary);
+}
+
+/* Override PrimeVue primary color */
+.p-button {
+  background-color: var(--vintage-primary) !important;
+  border-color: var(--vintage-primary) !important;
+}
+
+.p-button:hover {
+  background-color: var(--vintage-accent) !important;
+  border-color: var(--vintage-accent) !important;
+}
+
+.p-button:focus {
+  box-shadow: 0 0 0 0.2rem rgba(154, 90, 46, 0.5) !important;
+}
+
+.p-inputtext:focus {
+  border-color: var(--vintage-primary) !important;
+  box-shadow: 0 0 0 0.2rem rgba(154, 90, 46, 0.2) !important;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--vintage-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--vintage-accent);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--vintage-primary);
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Animations */
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.fade-in.active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.8s ease-out;
+}
