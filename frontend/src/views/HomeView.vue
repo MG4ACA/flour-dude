@@ -9,7 +9,7 @@
         <img
           src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=2070"
           alt="Coffee"
-          class="w-full h-full object-cover opacity-30"
+          class="w-full h-full object-cover opacity-75"
         />
         <div
           class="absolute inset-0 bg-gradient-to-b from-vintage-bg via-transparent to-vintage-bg"
@@ -95,9 +95,24 @@
     </section>
 
     <!-- Products/Menu Section -->
-    <section id="products" class="products-section py-20 px-4 bg-vintage-bg">
-      <div class="container mx-auto max-w-7xl">
+    <section
+      id="products"
+      class="products-section py-20 px-4 bg-vintage-bg relative overflow-hidden"
+    >
+      <!-- Vintage Background Pattern -->
+      <div class="absolute inset-0 opacity-5 pointer-events-none">
+        <div class="absolute inset-0 vintage-pattern"></div>
+      </div>
+
+      <div class="container mx-auto max-w-7xl relative z-10">
         <div class="text-center mb-12 fade-in">
+          <div class="inline-block mb-4">
+            <div class="flex items-center gap-3">
+              <div class="h-px w-12 bg-vintage-accent"></div>
+              <i class="pi pi-shop text-3xl text-vintage-accent"></i>
+              <div class="h-px w-12 bg-vintage-accent"></div>
+            </div>
+          </div>
           <h2 class="text-5xl font-heading font-bold text-vintage-primary mb-4">Our Menu</h2>
           <p class="text-lg font-body text-vintage-text max-w-2xl mx-auto">
             Handcrafted with love, served with passion. Explore our selection of premium coffees,
@@ -105,79 +120,106 @@
           </p>
         </div>
 
-        <!-- Filters -->
-        <div class="mb-8 fade-in">
-          <div class="flex flex-wrap gap-4 justify-center items-center">
-            <span class="p-input-icon-left w-full md:w-auto">
-              <i class="pi pi-search" />
-              <InputText
-                v-model="searchQuery"
-                placeholder="Search menu..."
-                class="w-full md:w-80"
-              />
-            </span>
-            <Dropdown
-              v-model="selectedCategory"
-              :options="categoryOptions"
-              optionLabel="name"
-              optionValue="id"
-              placeholder="All Categories"
-              class="w-full md:w-60"
-              showClear
+        <!-- Category Filter Buttons -->
+        <div class="flex justify-center gap-3 mb-8 flex-wrap fade-in">
+          <Button
+            label="All"
+            :class="{
+              'p-button-filled': selectedCategory === null,
+              'p-button-outlined': selectedCategory !== null,
+            }"
+            size="small"
+            @click="selectedCategory = null"
+            class="vintage-filter-btn"
+          />
+          <Button
+            v-for="category in categories"
+            :key="category.id"
+            :label="category.name"
+            :class="{
+              'p-button-filled': selectedCategory === category.id,
+              'p-button-outlined': selectedCategory !== category.id,
+            }"
+            size="small"
+            @click="selectedCategory = category.id"
+            class="vintage-filter-btn"
+          />
+        </div>
+
+        <!-- Search Bar -->
+        <div class="flex justify-center mb-8 fade-in px-4">
+          <span class="p-input-icon-left w-full sm:w-80 md:w-96">
+            <i class="pi pi-search" />
+            <InputText v-model="searchQuery" placeholder="Search menu..." class="w-full" />
+          </span>
+        </div>
+
+        <!-- Products Masonry Grid -->
+        <div v-if="loading" class="masonry-menu">
+          <div
+            v-for="n in 6"
+            :key="`skeleton-${n}`"
+            class="menu-item skeleton-loader animate-pulse bg-white/50 rounded-lg"
+          ></div>
+        </div>
+
+        <div
+          v-else-if="!loading && displayedProducts.length > 0"
+          class="masonry-menu fade-in"
+          :class="{ 'masonry-loaded': true }"
+        >
+          <div
+            v-for="(product, index) in displayedProducts"
+            :key="product.id"
+            class="menu-item group relative overflow-hidden rounded-lg cursor-pointer bg-white border-2 border-transparent hover:border-vintage-accent"
+            :style="{ animationDelay: `${index * 0.1}s` }"
+          >
+            <!-- Product Image -->
+            <img
+              :src="product.image_url"
+              :alt="product.name"
+              class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
+              loading="lazy"
             />
-          </div>
-        </div>
 
-        <!-- Products Grid -->
-        <div v-if="loading" class="text-center py-20">
-          <ProgressSpinner />
-        </div>
-
-        <DataView v-else :value="filteredProducts" :layout="'grid'" class="fade-in">
-          <template #grid="slotProps">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <Card
-                v-for="product in slotProps.items"
-                :key="product.id"
-                class="product-card hover:shadow-2xl transition-all duration-300 border-2 border-transparent hover:border-vintage-accent"
+            <!-- Vintage-styled overlay with product info -->
+            <div
+              class="menu-overlay absolute inset-0 bg-gradient-to-t from-vintage-primary/95 via-vintage-primary/60 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-5"
+            >
+              <div
+                class="transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500"
               >
-                <template #header>
-                  <img
-                    :src="product.image_url"
-                    :alt="product.name"
-                    class="w-full h-56 object-cover"
-                  />
-                </template>
-                <template #title>
-                  <h3 class="text-2xl font-heading font-bold text-vintage-primary">
-                    {{ product.name }}
-                  </h3>
-                </template>
-                <template #subtitle>
+                <div class="border-l-4 border-vintage-accent pl-3">
                   <Tag
                     :value="getCategoryName(product.category_id)"
-                    class="bg-vintage-accent text-white"
+                    class="bg-vintage-accent text-white mb-2"
                   />
-                </template>
-                <template #content>
-                  <p class="text-vintage-text font-body">{{ product.description }}</p>
-                </template>
-                <template #footer>
+                  <h3 class="font-heading text-white text-lg font-bold mb-2">
+                    {{ product.name }}
+                  </h3>
+                  <p class="font-body text-vintage-bg text-sm mb-3 line-clamp-2">
+                    {{ product.description }}
+                  </p>
                   <div class="flex justify-between items-center">
-                    <span class="text-2xl font-heading font-bold text-vintage-primary">
+                    <span class="text-xl font-heading font-bold text-vintage-bg">
                       Rs. {{ product.price }}
                     </span>
                     <Button
                       icon="pi pi-heart"
-                      class="p-button-rounded p-button-text"
-                      @click="toggleFavorite(product.id)"
+                      class="p-button-rounded p-button-text text-white hover:text-vintage-accent"
+                      @click.stop="toggleFavorite(product.id)"
                     />
                   </div>
-                </template>
-              </Card>
+                </div>
+              </div>
+              <div
+                class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100"
+              >
+                <i class="pi pi-eye text-white text-lg drop-shadow-lg"></i>
+              </div>
             </div>
-          </template>
-        </DataView>
+          </div>
+        </div>
 
         <div v-if="!loading && filteredProducts.length === 0" class="text-center py-20">
           <i class="pi pi-inbox text-6xl text-vintage-accent mb-4"></i>
@@ -185,79 +227,246 @@
             No products found. Try a different search or category.
           </p>
         </div>
+
+        <!-- View More Button -->
+        <div v-if="hasMoreProducts" class="text-center mt-8 fade-in">
+          <Button
+            label="View More Products"
+            icon="pi pi-chevron-down"
+            class="p-button-lg p-button-outlined"
+            @click="showAllProducts = true"
+          />
+        </div>
       </div>
     </section>
 
     <!-- Gallery Section -->
-    <section id="gallery" class="gallery-section py-20 px-4 bg-white">
-      <div class="container mx-auto max-w-7xl">
+    <section id="gallery" class="gallery-section py-20 px-4 bg-white relative overflow-hidden">
+      <!-- Vintage Background Pattern -->
+      <div class="absolute inset-0 opacity-5 pointer-events-none">
+        <div class="absolute inset-0 vintage-pattern"></div>
+      </div>
+
+      <div class="container mx-auto max-w-7xl relative z-10">
         <div class="text-center mb-12 fade-in">
-          <h2 class="text-5xl font-heading font-bold text-vintage-primary mb-4">Gallery</h2>
+          <div class="inline-block mb-4">
+            <div class="flex items-center gap-3">
+              <div class="h-px w-12 bg-vintage-accent"></div>
+              <i class="pi pi-images text-3xl text-vintage-accent"></i>
+              <div class="h-px w-12 bg-vintage-accent"></div>
+            </div>
+          </div>
+          <h2 class="text-5xl font-heading font-bold text-vintage-primary mb-4">Our Gallery</h2>
           <p class="text-lg font-body text-vintage-text max-w-2xl mx-auto">
             A glimpse into our world of coffee, craftsmanship, and community
           </p>
         </div>
 
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 fade-in">
+        <!-- Filter buttons -->
+        <div class="flex justify-center gap-3 mb-8 flex-wrap fade-in">
+          <Button
+            v-for="filter in galleryFilters"
+            :key="filter"
+            :label="filter"
+            :class="{
+              'p-button-filled': selectedGalleryFilter === filter,
+              'p-button-outlined': selectedGalleryFilter !== filter,
+            }"
+            size="small"
+            @click="selectedGalleryFilter = filter"
+            class="vintage-filter-btn"
+          />
+        </div>
+
+        <!-- Masonry Gallery Grid -->
+        <div
+          v-if="!galleryLoading"
+          class="masonry-gallery fade-in"
+          :class="{ 'masonry-loaded': galleryImagesLoaded }"
+        >
           <div
-            v-for="(image, index) in galleryImages"
+            v-for="(image, index) in filteredGalleryImages"
             :key="index"
-            class="gallery-item overflow-hidden rounded-lg shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer"
+            class="gallery-item group relative overflow-hidden rounded-lg cursor-pointer"
+            :class="image.height"
+            :style="{ animationDelay: `${index * 0.1}s` }"
             @click="showGalleryImage(index)"
           >
+            <!-- Image with loading state -->
+            <div
+              v-if="!image.loaded"
+              class="skeleton-loader absolute inset-0 bg-vintage-accent/20 animate-pulse"
+            ></div>
             <img
               :src="image.url"
               :alt="image.caption"
-              class="w-full h-64 object-cover hover:scale-110 transition-transform duration-500"
+              class="w-full h-full object-cover transition-all duration-700 group-hover:scale-110"
+              :class="{ 'opacity-0': !image.loaded }"
+              @load="onImageLoad(index)"
+              loading="lazy"
             />
+
+            <!-- Vintage-styled overlay with caption -->
+            <div
+              class="gallery-overlay absolute inset-0 bg-gradient-to-t from-vintage-primary/90 via-vintage-primary/50 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex flex-col justify-end p-4"
+            >
+              <div
+                class="transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500"
+              >
+                <div class="border-l-4 border-vintage-accent pl-3">
+                  <h3 class="font-heading text-white text-base font-bold mb-1">
+                    {{ image.caption }}
+                  </h3>
+                  <p
+                    v-if="image.category"
+                    class="font-body text-vintage-bg text-sm flex items-center gap-1"
+                  >
+                    <i class="pi pi-tag text-xs"></i>
+                    {{ image.category }}
+                  </p>
+                </div>
+              </div>
+              <div
+                class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100"
+              >
+                <i class="pi pi-search-plus text-white text-lg drop-shadow-lg"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Loading skeleton -->
+        <div v-else class="masonry-gallery">
+          <div
+            v-for="n in 8"
+            :key="`skeleton-${n}`"
+            class="gallery-item skeleton-loader animate-pulse bg-vintage-accent/20 rounded-lg"
+            :class="['tall', 'medium', 'short'][n % 3]"
+          ></div>
+        </div>
+
+        <!-- Instagram Feed Integration Placeholder -->
+        <div class="text-center mt-12 fade-in">
+          <div
+            class="inline-flex items-center gap-3 px-6 py-3 bg-vintage-bg rounded-lg shadow-md hover:shadow-lg transition-shadow"
+          >
+            <i class="pi pi-instagram text-2xl text-vintage-accent"></i>
+            <span class="font-body text-vintage-text">Follow us on Instagram for more!</span>
+            <a
+              href="https://instagram.com/flourdude"
+              target="_blank"
+              class="font-heading font-bold text-vintage-primary hover:text-vintage-accent transition-colors"
+            >
+              @flourdude
+            </a>
           </div>
         </div>
       </div>
 
-      <!-- Gallery Dialog -->
+      <!-- Enhanced Gallery Lightbox Dialog -->
       <Dialog
         v-model:visible="galleryDialogVisible"
         modal
-        :style="{ width: '80vw' }"
-        class="gallery-dialog"
+        :style="{ width: isFullscreen ? '100vw' : '85vw', height: isFullscreen ? '100vh' : 'auto' }"
+        :class="{ 'gallery-dialog': true, 'gallery-fullscreen': isFullscreen }"
+        :draggable="false"
+        :maximizable="false"
       >
         <template #header>
-          <h3 class="font-heading text-2xl">{{ galleryImages[currentGalleryIndex]?.caption }}</h3>
+          <div class="flex items-center justify-between w-full pr-8">
+            <div class="flex-1">
+              <h3 class="font-heading text-2xl text-vintage-primary mb-1">
+                {{ filteredGalleryImages[currentGalleryIndex]?.caption }}
+              </h3>
+              <p
+                v-if="filteredGalleryImages[currentGalleryIndex]?.category"
+                class="font-body text-sm text-vintage-accent flex items-center gap-1"
+              >
+                <i class="pi pi-tag text-xs"></i>
+                {{ filteredGalleryImages[currentGalleryIndex]?.category }}
+              </p>
+            </div>
+            <Button
+              :icon="isFullscreen ? 'pi pi-window-minimize' : 'pi pi-window-maximize'"
+              @click="toggleFullscreen"
+              class="p-button-rounded p-button-text p-button-plain"
+              v-tooltip.left="isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'"
+            />
+          </div>
         </template>
-        <div class="flex justify-center items-center">
+
+        <div
+          class="relative flex justify-center items-center"
+          :class="isFullscreen ? 'h-[85vh]' : 'h-[60vh]'"
+        >
+          <!-- Main Image -->
           <img
-            :src="galleryImages[currentGalleryIndex]?.url"
-            :alt="galleryImages[currentGalleryIndex]?.caption"
-            class="max-w-full max-h-[70vh] object-contain"
+            :src="filteredGalleryImages[currentGalleryIndex]?.url"
+            :alt="filteredGalleryImages[currentGalleryIndex]?.caption"
+            class="max-w-full max-h-full object-contain rounded-lg shadow-2xl gallery-lightbox-image"
+          />
+
+          <!-- Navigation Arrows (Overlay on image) -->
+          <Button
+            icon="pi pi-chevron-left"
+            @click="previousGalleryImage"
+            :disabled="currentGalleryIndex === 0"
+            class="p-button-rounded p-button-lg gallery-nav-btn gallery-nav-left"
+            v-tooltip.right="'Previous'"
+          />
+          <Button
+            icon="pi pi-chevron-right"
+            @click="nextGalleryImage"
+            :disabled="currentGalleryIndex === filteredGalleryImages.length - 1"
+            class="p-button-rounded p-button-lg gallery-nav-btn gallery-nav-right"
+            v-tooltip.left="'Next'"
           />
         </div>
+
         <template #footer>
-          <div class="flex justify-between">
-            <Button
-              label="Previous"
-              icon="pi pi-chevron-left"
-              @click="previousGalleryImage"
-              :disabled="currentGalleryIndex === 0"
-            />
-            <span class="font-body">
-              {{ currentGalleryIndex + 1 }} / {{ galleryImages.length }}
-            </span>
-            <Button
-              label="Next"
-              icon="pi pi-chevron-right"
-              iconPos="right"
-              @click="nextGalleryImage"
-              :disabled="currentGalleryIndex === galleryImages.length - 1"
-            />
+          <div class="flex justify-between items-center w-full">
+            <div class="flex gap-2">
+              <Button
+                icon="pi pi-download"
+                label="Download"
+                @click="downloadImage(filteredGalleryImages[currentGalleryIndex])"
+                class="p-button-sm p-button-outlined"
+                v-tooltip.top="'Download Image'"
+              />
+            </div>
+            <div class="flex items-center gap-4">
+              <span class="font-heading font-bold text-lg text-vintage-primary">
+                {{ currentGalleryIndex + 1 }} / {{ filteredGalleryImages.length }}
+              </span>
+            </div>
+            <div class="flex gap-2">
+              <Button
+                icon="pi pi-share-alt"
+                label="Share"
+                class="p-button-sm p-button-outlined"
+                v-tooltip.top="'Share Image'"
+              />
+            </div>
           </div>
         </template>
       </Dialog>
     </section>
 
     <!-- Testimonials Section -->
-    <section id="testimonials" class="testimonials-section py-20 px-4 bg-vintage-bg">
-      <div class="container mx-auto max-w-6xl">
-        <div class="text-center mb-12 fade-in">
+    <section
+      id="testimonials"
+      class="testimonials-section py-20 px-4 bg-white relative overflow-hidden"
+    >
+      <!-- Background Pattern -->
+      <div class="absolute inset-0 opacity-5 pointer-events-none">
+        <div class="absolute inset-0 vintage-pattern"></div>
+      </div>
+
+      <div class="container mx-auto max-w-6xl relative z-10">
+        <div class="text-center mb-16 fade-in">
+          <div class="inline-block mb-4">
+            <i class="pi pi-comments text-5xl text-vintage-accent"></i>
+          </div>
           <h2 class="text-5xl font-heading font-bold text-vintage-primary mb-4">
             What Our Customers Say
           </h2>
@@ -267,32 +476,54 @@
         </div>
 
         <div class="grid md:grid-cols-3 gap-8 fade-in">
-          <Card
+          <div
             v-for="testimonial in testimonials"
             :key="testimonial.id"
-            class="testimonial-card text-center border-2 border-vintage-accent"
+            class="testimonial-card group relative bg-vintage-bg rounded-lg p-8 shadow-lg hover:shadow-2xl transition-all duration-500"
           >
-            <template #header>
-              <div class="flex justify-center pt-6">
-                <Avatar
-                  :label="testimonial.name.charAt(0)"
-                  size="xlarge"
-                  shape="circle"
-                  class="bg-vintage-primary text-white text-3xl"
-                />
+            <!-- Quote Icon -->
+            <div
+              class="absolute -top-4 -left-4 w-16 h-16 bg-vintage-accent rounded-full flex items-center justify-center shadow-lg"
+            >
+              <i class="pi pi-quote-left text-2xl text-white"></i>
+            </div>
+
+            <!-- Rating Stars -->
+            <div class="flex justify-center mb-6 mt-4">
+              <Rating
+                :modelValue="testimonial.rating"
+                :readonly="true"
+                :cancel="false"
+                class="text-vintage-accent"
+              />
+            </div>
+
+            <!-- Testimonial Text -->
+            <p class="text-vintage-text font-body italic text-lg mb-8 leading-relaxed text-center">
+              "{{ testimonial.text }}"
+            </p>
+
+            <!-- Author Info -->
+            <div class="flex items-center gap-4 pt-6 border-t-2 border-vintage-accent/30">
+              <Avatar
+                :label="testimonial.name.charAt(0)"
+                size="large"
+                shape="circle"
+                class="bg-vintage-primary text-white text-xl shadow-md"
+              />
+              <div class="text-left">
+                <h4 class="font-heading font-bold text-vintage-primary text-lg">
+                  {{ testimonial.name }}
+                </h4>
+                <p class="text-vintage-accent font-body text-sm">{{ testimonial.role }}</p>
               </div>
-            </template>
-            <template #content>
-              <div class="flex justify-center mb-4">
-                <Rating :modelValue="testimonial.rating" :readonly="true" :cancel="false" />
-              </div>
-              <p class="text-vintage-text font-body italic mb-4">"{{ testimonial.text }}"</p>
-              <h4 class="font-heading font-bold text-vintage-primary text-xl">
-                {{ testimonial.name }}
-              </h4>
-              <p class="text-vintage-accent font-body text-sm">{{ testimonial.role }}</p>
-            </template>
-          </Card>
+            </div>
+
+            <!-- Decorative element on hover -->
+            <div
+              class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-vintage-primary via-vintage-accent to-vintage-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-b-lg"
+            ></div>
+          </div>
         </div>
       </div>
     </section>
@@ -401,30 +632,57 @@
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="contact-section py-20 px-4 bg-vintage-bg">
-      <div class="container mx-auto max-w-4xl">
+    <section id="contact" class="contact-section py-20 px-4 bg-white relative overflow-hidden">
+      <!-- Decorative Background -->
+      <div class="absolute inset-0 opacity-5 pointer-events-none">
+        <div class="absolute inset-0 vintage-pattern"></div>
+      </div>
+
+      <div class="container mx-auto max-w-4xl relative z-10">
         <div class="text-center mb-12 fade-in">
+          <div class="inline-block mb-4">
+            <div class="flex items-center gap-3">
+              <div class="h-px w-12 bg-vintage-accent"></div>
+              <i class="pi pi-envelope text-3xl text-vintage-accent"></i>
+              <div class="h-px w-12 bg-vintage-accent"></div>
+            </div>
+          </div>
           <h2 class="text-5xl font-heading font-bold text-vintage-primary mb-4">Get In Touch</h2>
           <p class="text-lg font-body text-vintage-text max-w-2xl mx-auto">
-            Have a question or feedback? We'd love to hear from you!
+            Have a question or feedback? We'd love to hear from you! Drop us a message and we'll get
+            back to you soon.
           </p>
         </div>
 
-        <Card class="fade-in contact-form-card border-2 border-vintage-accent">
-          <template #content>
+        <!-- Contact Form -->
+        <div class="fade-in">
+          <div
+            class="bg-gradient-to-br from-vintage-bg/10 to-transparent border-2 border-vintage-accent/30 rounded-lg p-8 backdrop-blur-sm"
+          >
             <form @submit.prevent="submitContact" class="space-y-6">
               <div class="grid md:grid-cols-2 gap-6">
-                <div class="flex flex-column gap-2">
-                  <label for="name" class="font-body font-semibold text-vintage-text">Name *</label>
+                <div class="flex flex-column gap-3 contact-form-label">
+                  <label
+                    for="name"
+                    class="font-heading font-semibold text-vintage-primary flex items-center gap-2"
+                  >
+                    <i class="pi pi-user text-sm"></i>
+                    Name *
+                  </label>
                   <InputText
                     id="name"
                     v-model="contactForm.name"
                     required
                     placeholder="Your name"
+                    class="contact-input"
                   />
                 </div>
-                <div class="flex flex-column gap-2">
-                  <label for="email" class="font-body font-semibold text-vintage-text">
+                <div class="flex flex-column gap-3 contact-form-label">
+                  <label
+                    for="email"
+                    class="font-heading font-semibold text-vintage-primary flex items-center gap-2"
+                  >
+                    <i class="pi pi-envelope text-sm"></i>
                     Email *
                   </label>
                   <InputText
@@ -433,17 +691,33 @@
                     type="email"
                     required
                     placeholder="your.email@example.com"
+                    class="contact-input"
                   />
                 </div>
               </div>
 
-              <div class="flex flex-column gap-2">
-                <label for="phone" class="font-body font-semibold text-vintage-text">Phone</label>
-                <InputText id="phone" v-model="contactForm.phone" placeholder="+94 XX XXX XXXX" />
+              <div class="flex flex-column gap-3 contact-form-label">
+                <label
+                  for="phone"
+                  class="font-heading font-semibold text-vintage-primary flex items-center gap-2"
+                >
+                  <i class="pi pi-phone text-sm"></i>
+                  Phone
+                </label>
+                <InputText
+                  id="phone"
+                  v-model="contactForm.phone"
+                  placeholder="+94 XX XXX XXXX"
+                  class="contact-input"
+                />
               </div>
 
-              <div class="flex flex-column gap-2">
-                <label for="subject" class="font-body font-semibold text-vintage-text">
+              <div class="flex flex-column gap-3 contact-form-label">
+                <label
+                  for="subject"
+                  class="font-heading font-semibold text-vintage-primary flex items-center gap-2"
+                >
+                  <i class="pi pi-question text-sm"></i>
                   Subject *
                 </label>
                 <InputText
@@ -451,34 +725,66 @@
                   v-model="contactForm.subject"
                   required
                   placeholder="What's this about?"
+                  class="contact-input"
                 />
               </div>
 
-              <div class="flex flex-column gap-2">
-                <label for="message" class="font-body font-semibold text-vintage-text">
+              <div class="flex flex-column gap-3 contact-form-label">
+                <label
+                  for="message"
+                  class="font-heading font-semibold text-vintage-primary flex items-center gap-2"
+                >
+                  <i class="pi pi-comments text-sm"></i>
                   Message *
                 </label>
                 <Textarea
                   id="message"
                   v-model="contactForm.message"
                   required
-                  rows="6"
+                  rows="5"
                   placeholder="Tell us more..."
+                  class="contact-input"
                 />
               </div>
 
-              <div class="flex justify-center">
-                <Button
-                  type="submit"
-                  label="Send Message"
-                  icon="pi pi-send"
-                  class="p-button-lg"
-                  :loading="contactSubmitting"
-                />
-              </div>
+              <Button
+                type="submit"
+                label="Send Message"
+                icon="pi pi-send"
+                class="w-full p-button-lg bg-vintage-primary"
+                :loading="contactSubmitting"
+              />
             </form>
-          </template>
-        </Card>
+          </div>
+        </div>
+
+        <!-- Newsletter Section -->
+        <div class="mt-16 fade-in">
+          <div class="text-center mb-8">
+            <i class="pi pi-bell text-4xl text-vintage-accent mb-3 block"></i>
+            <h3 class="text-3xl font-heading font-bold text-vintage-primary mb-2">Stay Updated</h3>
+            <p class="text-vintage-text font-body">
+              Subscribe to our newsletter for special offers and coffee news
+            </p>
+          </div>
+
+          <form @submit.prevent="subscribeNewsletter" class="flex gap-3 max-w-xl mx-auto">
+            <InputText
+              v-model="newsletterEmail"
+              type="email"
+              required
+              placeholder="Enter your email"
+              class="flex-1 contact-input"
+            />
+            <Button
+              type="submit"
+              label="Subscribe"
+              icon="pi pi-check"
+              :loading="newsletterSubmitting"
+              class="p-button-lg"
+            />
+          </form>
+        </div>
       </div>
     </section>
 
@@ -581,6 +887,7 @@
 import { categoryService, productService } from '@/services/api';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Tooltip from 'primevue/tooltip';
 import { useToast } from 'primevue/usetoast';
 import { computed, onMounted, ref } from 'vue';
 
@@ -588,12 +895,9 @@ import { computed, onMounted, ref } from 'vue';
 import Avatar from 'primevue/avatar';
 import Button from 'primevue/button';
 import Card from 'primevue/card';
-import DataView from 'primevue/dataview';
 import Dialog from 'primevue/dialog';
 import Divider from 'primevue/divider';
-import Dropdown from 'primevue/dropdown';
 import InputText from 'primevue/inputtext';
-import ProgressSpinner from 'primevue/progressspinner';
 import Rating from 'primevue/rating';
 import Tag from 'primevue/tag';
 import Textarea from 'primevue/textarea';
@@ -601,13 +905,16 @@ import Textarea from 'primevue/textarea';
 gsap.registerPlugin(ScrollTrigger);
 
 const toast = useToast();
+const vTooltip = Tooltip; // Register tooltip directive locally
 
 // Products & Categories
+const INITIAL_PRODUCTS_LIMIT = 6;
 const products = ref([]);
 const categories = ref([]);
 const loading = ref(true);
 const searchQuery = ref('');
 const selectedCategory = ref(null);
+const showAllProducts = ref(false);
 
 // Contact Form
 const contactForm = ref({
@@ -626,38 +933,138 @@ const newsletterSubmitting = ref(false);
 // Gallery
 const galleryDialogVisible = ref(false);
 const currentGalleryIndex = ref(0);
+const isFullscreen = ref(false);
+const galleryLoading = ref(true);
+const galleryImagesLoaded = ref(false);
+const selectedGalleryFilter = ref('All');
+const galleryFilters = ref(['All', 'Coffee', 'Food', 'Ambiance', 'Process']);
+
 const galleryImages = ref([
   {
     url: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=800',
     caption: 'Fresh Coffee Brewing',
+    category: 'Coffee',
+    height: 'tall',
+    loaded: false,
   },
   {
     url: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=800',
     caption: 'Artisanal Coffee Art',
+    category: 'Coffee',
+    height: 'medium',
+    loaded: false,
   },
   {
     url: 'https://images.unsplash.com/photo-1517487881594-2787fef5ebf7?q=80&w=800',
-    caption: 'Cozy Ambiance',
+    caption: 'Cozy Vintage Ambiance',
+    category: 'Ambiance',
+    height: 'short',
+    loaded: false,
   },
   {
     url: 'https://images.unsplash.com/photo-1511920170033-f8396924c348?q=80&w=800',
     caption: 'Coffee Making Process',
+    category: 'Process',
+    height: 'medium',
+    loaded: false,
   },
   {
     url: 'https://images.unsplash.com/photo-1442512595331-e89e73853f31?q=80&w=800',
     caption: 'Delicious Brownies',
+    category: 'Food',
+    height: 'tall',
+    loaded: false,
   },
   {
-    url: 'https://images.unsplash.com/photo-1587049352846-4a222e784422?q=80&w=800',
+    url: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?q=80&w=800',
     caption: 'Fresh Pastries',
+    category: 'Food',
+    height: 'short',
+    loaded: false,
   },
   {
-    url: 'https://images.unsplash.com/photo-1501492673258-a87e20d3e90f?q=80&w=800',
+    url: 'https://images.unsplash.com/photo-1495521821757-a1efb6729352?q=80&w=800',
     caption: 'Our Vintage Interior',
+    category: 'Ambiance',
+    height: 'tall',
+    loaded: false,
   },
   {
     url: 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?q=80&w=800',
     caption: 'Coffee Beans Selection',
+    category: 'Process',
+    height: 'medium',
+    loaded: false,
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=800',
+    caption: 'Premium Coffee Blends',
+    category: 'Coffee',
+    height: 'short',
+    loaded: false,
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?q=80&w=800',
+    caption: 'Gourmet Cakes',
+    category: 'Food',
+    height: 'medium',
+    loaded: false,
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1545665225-b23b99e4d45e?q=80&w=800',
+    caption: 'Latte Art Mastery',
+    category: 'Coffee',
+    height: 'short',
+    loaded: false,
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=800',
+    caption: 'Coffee Shop Counter',
+    category: 'Ambiance',
+    height: 'medium',
+    loaded: false,
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1506619216599-9d16d0903dfd?q=80&w=800',
+    caption: 'Espresso Machine Detail',
+    category: 'Process',
+    height: 'tall',
+    loaded: false,
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1499636136210-6f4ee915583e?q=80&w=800',
+    caption: 'Chocolate Chip Cookies',
+    category: 'Food',
+    height: 'short',
+    loaded: false,
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1447933601403-0c6688de566e?q=80&w=800',
+    caption: 'Coffee Pour Perfection',
+    category: 'Process',
+    height: 'medium',
+    loaded: false,
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1497935586351-b67a49e012bf?q=80&w=800',
+    caption: 'Cozy Reading Corner',
+    category: 'Ambiance',
+    height: 'tall',
+    loaded: false,
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1495521821757-a1efb6729352?q=80&w=800',
+    caption: 'Cappuccino Delight',
+    category: 'Coffee',
+    height: 'medium',
+    loaded: false,
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1481833761820-0509d3217039?q=80&w=800',
+    caption: 'Artisan Bread & Pastries',
+    category: 'Food',
+    height: 'short',
+    loaded: false,
   },
 ]);
 
@@ -710,6 +1117,29 @@ const filteredProducts = computed(() => {
   return filtered;
 });
 
+const displayedProducts = computed(() => {
+  if (showAllProducts.value || searchQuery.value.trim() || selectedCategory.value) {
+    return filteredProducts.value;
+  }
+  return filteredProducts.value.slice(0, INITIAL_PRODUCTS_LIMIT);
+});
+
+const hasMoreProducts = computed(() => {
+  return (
+    filteredProducts.value.length > INITIAL_PRODUCTS_LIMIT &&
+    !showAllProducts.value &&
+    !searchQuery.value.trim() &&
+    !selectedCategory.value
+  );
+});
+
+const filteredGalleryImages = computed(() => {
+  if (selectedGalleryFilter.value === 'All') {
+    return galleryImages.value;
+  }
+  return galleryImages.value.filter((img) => img.category === selectedGalleryFilter.value);
+});
+
 // Methods
 const fetchData = async () => {
   try {
@@ -758,7 +1188,7 @@ const loadDemoData = () => {
       description: 'Perfectly balanced espresso with steamed milk and foam',
       price: 450,
       category_id: 1,
-      image_url: 'https://images.unsplash.com/photo-1572442388796-11668a67e53d?q=80&w=800',
+      image_url: 'https://images.unsplash.com/photo-1495521821757-a1efb6729352?q=80&w=800',
     },
     {
       id: 3,
@@ -824,6 +1254,11 @@ const getCategoryName = (categoryId) => {
   return category ? category.name : 'Unknown';
 };
 
+const getMenuItemHeight = (index) => {
+  const heights = ['short', 'medium', 'tall', 'medium', 'tall', 'short'];
+  return heights[index % heights.length];
+};
+
 const toggleFavorite = (productId) => {
   toast.add({
     severity: 'success',
@@ -846,7 +1281,7 @@ const showGalleryImage = (index) => {
 };
 
 const nextGalleryImage = () => {
-  if (currentGalleryIndex.value < galleryImages.value.length - 1) {
+  if (currentGalleryIndex.value < filteredGalleryImages.value.length - 1) {
     currentGalleryIndex.value++;
   }
 };
@@ -855,6 +1290,34 @@ const previousGalleryImage = () => {
   if (currentGalleryIndex.value > 0) {
     currentGalleryIndex.value--;
   }
+};
+
+const toggleFullscreen = () => {
+  isFullscreen.value = !isFullscreen.value;
+};
+
+const onImageLoad = (index) => {
+  galleryImages.value[index].loaded = true;
+
+  // Check if all images are loaded
+  const allLoaded = galleryImages.value.every((img) => img.loaded);
+  if (allLoaded) {
+    galleryImagesLoaded.value = true;
+  }
+};
+
+const downloadImage = (image) => {
+  const link = document.createElement('a');
+  link.href = image.url;
+  link.download = image.caption.replace(/\s+/g, '-').toLowerCase() + '.jpg';
+  link.click();
+
+  toast.add({
+    severity: 'success',
+    summary: 'Download Started',
+    detail: 'Image download has started',
+    life: 2000,
+  });
 };
 
 const submitContact = async () => {
@@ -946,6 +1409,11 @@ onMounted(() => {
   setTimeout(() => {
     initAnimations();
   }, 100);
+
+  // Simulate gallery loading
+  setTimeout(() => {
+    galleryLoading.value = false;
+  }, 800);
 });
 </script>
 
@@ -964,19 +1432,189 @@ onMounted(() => {
   transform: translateY(-10px);
 }
 
+/* Vintage Background Pattern */
+.vintage-pattern {
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%238B4513' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
+/* Masonry Gallery Styles */
+.masonry-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-auto-rows: 110px;
+  gap: 0.875rem;
+}
+
+/* Masonry Menu Styles */
+.masonry-menu {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.menu-item {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border: 3px solid transparent;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+  box-shadow: 0 4px 15px rgba(139, 69, 19, 0.15);
+}
+
+.menu-item:hover {
+  border-color: var(--vintage-accent);
+  box-shadow: 0 25px 50px rgba(139, 69, 19, 0.3);
+  transform: translateY(-5px);
+  z-index: 10;
+}
+
+.menu-overlay {
+  backdrop-filter: blur(2px);
+}
+
 .gallery-item {
   position: relative;
-  aspect-ratio: 1;
+  border: 3px solid transparent;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+.gallery-item.short {
+  grid-row: span 2;
+}
+
+.gallery-item.medium {
+  grid-row: span 3;
+}
+
+.gallery-item.tall {
+  grid-row: span 4;
+}
+
+.gallery-item:hover {
+  border-color: var(--vintage-accent);
+  box-shadow: 0 25px 50px rgba(139, 69, 19, 0.3);
+  transform: translateY(-5px);
+  z-index: 10;
+}
+
+.gallery-overlay {
+  backdrop-filter: blur(2px);
+}
+
+.skeleton-loader {
+  position: relative;
+  overflow: hidden;
+}
+
+.contact-form-label {
+  flex-direction: column;
+}
+.skeleton-loader::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  to {
+    left: 100%;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.masonry-loaded .gallery-item {
+  animation-play-state: running;
+}
+
+/* Gallery Dialog Enhancements */
+.gallery-dialog :deep(.p-dialog) {
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5);
+  border: 2px solid var(--vintage-accent);
+}
+
+.gallery-fullscreen :deep(.p-dialog) {
+  border-radius: 0;
+  max-height: 100vh !important;
+  margin: 0 !important;
+}
+
+.gallery-lightbox-image {
+  animation: zoomIn 0.4s ease-out;
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.gallery-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(139, 69, 19, 0.9) !important;
+  border: 2px solid var(--vintage-bg);
+  z-index: 10;
+}
+
+.gallery-nav-btn:hover:not(:disabled) {
+  background: var(--vintage-primary) !important;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.gallery-nav-left {
+  left: 20px;
+}
+
+.gallery-nav-right {
+  right: 20px;
+}
+
+/* Vintage Filter Buttons */
+.vintage-filter-btn {
+  transition: all 0.3s ease;
+  border: 2px solid var(--vintage-accent);
+}
+
+.vintage-filter-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
 }
 
 .testimonial-card {
-  background: white;
-  transition: all 0.3s ease;
+  background: var(--vintage-bg);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
 }
 
 .testimonial-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  transform: translateY(-10px);
+  box-shadow: 0 25px 50px rgba(139, 69, 19, 0.2);
+  border-color: var(--vintage-accent);
 }
 
 .contact-form-card {
@@ -992,9 +1630,133 @@ onMounted(() => {
   transform: scale(1.2);
 }
 
-@media (max-width: 768px) {
+/* Contact Section Styles */
+.contact-input {
+  border: 2px solid var(--vintage-accent) !important;
+  border-radius: 0.5rem !important;
+  padding: 0.75rem 1rem !important;
+  transition: all 0.3s ease;
+}
+
+.contact-input:focus {
+  border-color: var(--vintage-primary) !important;
+  box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1) !important;
+}
+
+.contact-info-card {
+  background: white;
+}
+
+.contact-info-card i {
+  transition: all 0.3s ease;
+}
+
+.contact-info-card:hover i {
+  transform: scale(1.1);
+  color: var(--vintage-primary);
+}
+
+/* Search Input Icon Fix */
+.p-input-icon-left {
+  display: inline-flex !important;
+  width: 100%;
+}
+
+.p-input-icon-left > i {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.p-input-icon-left > input {
+  padding-left: 2.5rem !important;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 640px) {
   .hero-title {
-    font-size: 3rem;
+    font-size: 2rem;
+  }
+
+  .masonry-menu {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .masonry-gallery {
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 80px;
+    gap: 0.5rem;
+  }
+
+  .gallery-item.short,
+  .gallery-item.medium,
+  .gallery-item.tall {
+    grid-row: span 1 !important;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 768px) {
+  .hero-title {
+    font-size: 2.5rem;
+  }
+
+  .masonry-menu {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .masonry-gallery {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: 120px;
+    gap: 0.75rem;
+  }
+
+  .gallery-item.short,
+  .gallery-item.medium,
+  .gallery-item.tall {
+    grid-row: span 1 !important;
+  }
+
+  .gallery-nav-btn {
+    display: none;
+  }
+
+  .gallery-dialog :deep(.p-dialog) {
+    width: 95vw !important;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1023px) {
+  .masonry-menu {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+  }
+
+  .masonry-gallery {
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 120px;
+    gap: 1rem;
+  }
+
+  .gallery-item.short,
+  .gallery-item.medium,
+  .gallery-item.tall {
+    grid-row: span 1 !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .masonry-gallery {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+  }
+
+  .masonry-menu {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.25rem;
   }
 }
 </style>
