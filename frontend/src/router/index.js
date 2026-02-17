@@ -1,19 +1,19 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import AdminView from '../views/AdminView.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import AdminView from '../views/AdminView.vue';
+import HomeView from '../views/HomeView.vue';
 
 const routes = [
   {
     path: '/',
     name: 'Home',
-    component: HomeView
+    component: HomeView,
   },
   {
     path: '/admin',
     name: 'Admin',
-    component: AdminView
-  }
-]
+    component: AdminView,
+  },
+];
 
 const router = createRouter({
   history: createWebHistory(),
@@ -22,11 +22,11 @@ const router = createRouter({
     if (to.hash) {
       return {
         el: to.hash,
-        behavior: 'smooth'
-      }
+        behavior: 'smooth',
+      };
     }
-    return { top: 0, behavior: 'smooth' }
-  }
-})
+    return { top: 0, behavior: 'smooth' };
+  },
+});
 
-export default router
+export default router;

@@ -5,6 +5,7 @@ A modern, vintage-styled website for Flour Dude, an artisanal coffee shop in Gal
 ## 🎨 Features
 
 ### Frontend
+
 - **Vue 3** with Composition API (Script Setup)
 - **PrimeVue** components for modern UI
 - **Primeflex** for responsive layouts
@@ -13,6 +14,7 @@ A modern, vintage-styled website for Flour Dude, an artisanal coffee shop in Gal
 - **Vintage coffee shop aesthetic** with custom color palette
 
 ### Pages & Sections
+
 - ✅ Sticky Navigation Bar
 - ✅ Hero Section with vintage aesthetic
 - ✅ Our Story Section
@@ -25,6 +27,7 @@ A modern, vintage-styled website for Flour Dude, an artisanal coffee shop in Gal
 - ✅ Admin Panel with full CRUD operations
 
 ### Backend
+
 - **Node.js** with Express
 - **MySQL** database
 - RESTful API endpoints
@@ -51,6 +54,7 @@ Text:        #3E1F0F (Body/Footer)
 ### Installation
 
 #### 1. Clone the repository
+
 ```bash
 cd c:\Mithuranga\flour-dude
 ```
@@ -75,19 +79,24 @@ npm install
 
 #### 3. Setup Database
 
-Open MySQL and run the schema file:
+The easiest way is to use the automated seed script:
 
 ```bash
-mysql -u root -p < database/schema.sql
+# Make sure you're in the backend folder
+cd backend
+
+# Configure your database credentials in .env file first
+# Then run the seed script
+npm run seed
 ```
 
-Or open MySQL Workbench/phpMyAdmin and execute the SQL file located at:
-`backend/database/schema.sql`
-
 This will:
+
 - Create the database `flour_dude_db`
 - Create `categories` and `products` tables
 - Insert sample data (5 categories, 25+ products)
+
+**Alternative**: You can also manually import `backend/database/schema.sql` using MySQL Workbench or phpMyAdmin
 
 #### 4. Setup Frontend
 
@@ -100,10 +109,16 @@ npm install
 
 ### Running the Application
 
-#### Start Backend Server
+#### Seed Database (First Time Only)
 
 ```bash
 cd backend
+npm run seed
+```
+
+#### Start Backend Server
+
+```bash
 npm run dev
 ```
 
@@ -163,6 +178,7 @@ flour-dude/
 ## 🔌 API Endpoints
 
 ### Products
+
 - `GET /api/products` - Get all products
 - `GET /api/products/:id` - Get single product
 - `POST /api/products` - Create new product
@@ -170,12 +186,14 @@ flour-dude/
 - `DELETE /api/products/:id` - Delete product
 
 ### Categories
+
 - `GET /api/categories` - Get all categories
 - `GET /api/categories/:id` - Get single category
 - `POST /api/categories` - Create new category
 - `DELETE /api/categories/:id` - Delete category
 
 ### Health Check
+
 - `GET /api/health` - Server health status
 
 ## 🎯 Usage
@@ -255,9 +273,10 @@ fontFamily: {
 
 ## 📸 Using Images
 
-The project uses [Unsplash](https://unsplash.com) for high-quality placeholder images. 
+The project uses [Unsplash](https://unsplash.com) for high-quality placeholder images.
 
 For coffee images, search for:
+
 - Coffee: `https://unsplash.com/s/photos/coffee`
 - Brownies: `https://unsplash.com/s/photos/brownies`
 - Pastries: `https://unsplash.com/s/photos/pastries`
@@ -268,6 +287,7 @@ Right-click on any image → Copy Image Address → Use in product form
 ## 🛠️ Technologies Used
 
 ### Frontend
+
 - Vue 3 (Composition API)
 - Vue Router
 - PrimeVue (UI Components)
@@ -279,6 +299,7 @@ Right-click on any image → Copy Image Address → Use in product form
 - Vite (Build Tool)
 
 ### Backend
+
 - Node.js
 - Express.js
 - MySQL2 (MySQL Driver)
@@ -302,6 +323,7 @@ Right-click on any image → Copy Image Address → Use in product form
 ### Frontend Deployment (Netlify/Vercel)
 
 1. Build the frontend:
+
    ```bash
    cd frontend
    npm run build

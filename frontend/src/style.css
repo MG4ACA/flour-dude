@@ -2,17 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --vintage-bg: #FFF1E8;
-  --vintage-accent: #D39A6A;
-  --vintage-primary: #9A5A2E;
-  --vintage-text: #3E1F0F;
-}
+/* Import PrimeFlex after Tailwind utilities for layout helpers */
+@import 'primeflex/primeflex.css';
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+:root {
+  --vintage-bg: #fff1e8;
+  --vintage-accent: #d39a6a;
+  --vintage-primary: #9a5a2e;
+  --vintage-text: #3e1f0f;
 }
 
 body {
@@ -22,7 +19,12 @@ body {
   overflow-x: hidden;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: 'Playfair Display', serif;
   color: var(--vintage-primary);
 }
@@ -70,10 +72,9 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Animations */
+/* Animations - removed initial opacity:0 to let GSAP handle it */
 .fade-in {
-  opacity: 0;
-  transform: translateY(30px);
+  /* Elements are visible by default, GSAP will animate them in */
 }
 
 .fade-in.active {

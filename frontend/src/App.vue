@@ -1,12 +1,14 @@
 <template>
   <div id="app" class="min-h-screen">
+    <Toast />
     <Navbar />
     <router-view />
   </div>
 </template>
 
 <script setup>
-import Navbar from './components/Navbar.vue'
+import Toast from 'primevue/toast';
+import Navbar from './components/Navbar.vue';
 </script>
 
 <style>

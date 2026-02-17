@@ -1,7 +1,7 @@
-import mysql from 'mysql2/promise'
-import dotenv from 'dotenv'
+import dotenv from 'dotenv';
+import mysql from 'mysql2/promise';
 
-dotenv.config()
+dotenv.config();
 
 const pool = mysql.createPool({
   host: process.env.DB_HOST || 'localhost',
@@ -11,18 +11,19 @@ const pool = mysql.createPool({
   port: process.env.DB_PORT || 3306,
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0
-})
+  queueLimit: 0,
+});
 
 // Test the connection
-pool.getConnection()
-  .then(connection => {
-    console.log('✅ MySQL Database Connected Successfully')
-    connection.release()
+pool
+  .getConnection()
+  .then((connection) => {
+    console.log('✅ MySQL Database Connected Successfully');
+    connection.release();
   })
-  .catch(err => {
-    console.error('❌ MySQL Connection Error:', err.message)
-    console.error('Please check your database configuration in .env file')
-  })
+  .catch((err) => {
+    console.error('❌ MySQL Connection Error:', err.message);
+    console.error('Please check your database configuration in .env file');
+  });
 
-export default pool
+export default pool;

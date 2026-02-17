@@ -13,21 +13,51 @@
 
         <!-- Desktop Menu -->
         <div class="hidden md:flex items-center gap-6">
-          <a href="#home" class="nav-link font-body font-medium text-vintage-text hover:text-vintage-primary transition-colors">Home</a>
-          <a href="#story" class="nav-link font-body font-medium text-vintage-text hover:text-vintage-primary transition-colors">Our Story</a>
-          <a href="#products" class="nav-link font-body font-medium text-vintage-text hover:text-vintage-primary transition-colors">Menu</a>
-          <a href="#gallery" class="nav-link font-body font-medium text-vintage-text hover:text-vintage-primary transition-colors">Gallery</a>
-          <a href="#location" class="nav-link font-body font-medium text-vintage-text hover:text-vintage-primary transition-colors">Visit Us</a>
-          <a href="#contact" class="nav-link font-body font-medium text-vintage-text hover:text-vintage-primary transition-colors">Contact</a>
+          <a
+            href="#home"
+            class="nav-link font-body font-medium text-vintage-text hover:text-vintage-primary transition-colors"
+          >
+            Home
+          </a>
+          <a
+            href="#story"
+            class="nav-link font-body font-medium text-vintage-text hover:text-vintage-primary transition-colors"
+          >
+            Our Story
+          </a>
+          <a
+            href="#products"
+            class="nav-link font-body font-medium text-vintage-text hover:text-vintage-primary transition-colors"
+          >
+            Menu
+          </a>
+          <a
+            href="#gallery"
+            class="nav-link font-body font-medium text-vintage-text hover:text-vintage-primary transition-colors"
+          >
+            Gallery
+          </a>
+          <a
+            href="#location"
+            class="nav-link font-body font-medium text-vintage-text hover:text-vintage-primary transition-colors"
+          >
+            Visit Us
+          </a>
+          <a
+            href="#contact"
+            class="nav-link font-body font-medium text-vintage-text hover:text-vintage-primary transition-colors"
+          >
+            Contact
+          </a>
           <router-link to="/admin">
             <Button label="Admin" icon="pi pi-cog" class="p-button-sm" />
           </router-link>
         </div>
 
         <!-- Mobile Menu Button -->
-        <Button 
-          icon="pi pi-bars" 
-          class="p-button-text p-button-rounded md:hidden" 
+        <Button
+          icon="pi pi-bars"
+          class="p-button-text p-button-rounded md:hidden"
           @click="mobileMenuVisible = true"
         />
       </div>
@@ -41,28 +71,63 @@
           <h2 class="text-xl font-heading font-bold text-vintage-primary m-0">Menu</h2>
         </div>
       </template>
-      
+
       <div class="flex flex-column gap-3">
-        <a href="#home" @click="mobileMenuVisible = false" class="p-3 hover:bg-vintage-accent hover:bg-opacity-20 rounded-lg transition-colors font-body">
-          <i class="pi pi-home mr-2"></i> Home
+        <a
+          href="#home"
+          @click="mobileMenuVisible = false"
+          class="p-3 hover:bg-vintage-accent hover:bg-opacity-20 rounded-lg transition-colors font-body"
+        >
+          <i class="pi pi-home mr-2"></i>
+          Home
         </a>
-        <a href="#story" @click="mobileMenuVisible = false" class="p-3 hover:bg-vintage-accent hover:bg-opacity-20 rounded-lg transition-colors font-body">
-          <i class="pi pi-book mr-2"></i> Our Story
+        <a
+          href="#story"
+          @click="mobileMenuVisible = false"
+          class="p-3 hover:bg-vintage-accent hover:bg-opacity-20 rounded-lg transition-colors font-body"
+        >
+          <i class="pi pi-book mr-2"></i>
+          Our Story
         </a>
-        <a href="#products" @click="mobileMenuVisible = false" class="p-3 hover:bg-vintage-accent hover:bg-opacity-20 rounded-lg transition-colors font-body">
-          <i class="pi pi-shopping-bag mr-2"></i> Menu
+        <a
+          href="#products"
+          @click="mobileMenuVisible = false"
+          class="p-3 hover:bg-vintage-accent hover:bg-opacity-20 rounded-lg transition-colors font-body"
+        >
+          <i class="pi pi-shopping-bag mr-2"></i>
+          Menu
         </a>
-        <a href="#gallery" @click="mobileMenuVisible = false" class="p-3 hover:bg-vintage-accent hover:bg-opacity-20 rounded-lg transition-colors font-body">
-          <i class="pi pi-images mr-2"></i> Gallery
+        <a
+          href="#gallery"
+          @click="mobileMenuVisible = false"
+          class="p-3 hover:bg-vintage-accent hover:bg-opacity-20 rounded-lg transition-colors font-body"
+        >
+          <i class="pi pi-images mr-2"></i>
+          Gallery
         </a>
-        <a href="#location" @click="mobileMenuVisible = false" class="p-3 hover:bg-vintage-accent hover:bg-opacity-20 rounded-lg transition-colors font-body">
-          <i class="pi pi-map-marker mr-2"></i> Visit Us
+        <a
+          href="#location"
+          @click="mobileMenuVisible = false"
+          class="p-3 hover:bg-vintage-accent hover:bg-opacity-20 rounded-lg transition-colors font-body"
+        >
+          <i class="pi pi-map-marker mr-2"></i>
+          Visit Us
         </a>
-        <a href="#contact" @click="mobileMenuVisible = false" class="p-3 hover:bg-vintage-accent hover:bg-opacity-20 rounded-lg transition-colors font-body">
-          <i class="pi pi-envelope mr-2"></i> Contact
+        <a
+          href="#contact"
+          @click="mobileMenuVisible = false"
+          class="p-3 hover:bg-vintage-accent hover:bg-opacity-20 rounded-lg transition-colors font-body"
+        >
+          <i class="pi pi-envelope mr-2"></i>
+          Contact
         </a>
-        <router-link to="/admin" @click="mobileMenuVisible = false" class="p-3 hover:bg-vintage-accent hover:bg-opacity-20 rounded-lg transition-colors font-body">
-          <i class="pi pi-cog mr-2"></i> Admin Panel
+        <router-link
+          to="/admin"
+          @click="mobileMenuVisible = false"
+          class="p-3 hover:bg-vintage-accent hover:bg-opacity-20 rounded-lg transition-colors font-body"
+        >
+          <i class="pi pi-cog mr-2"></i>
+          Admin Panel
         </router-link>
       </div>
     </Sidebar>
@@ -70,11 +135,11 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import Button from 'primevue/button'
-import Sidebar from 'primevue/sidebar'
+import Button from 'primevue/button';
+import Sidebar from 'primevue/sidebar';
+import { ref } from 'vue';
 
-const mobileMenuVisible = ref(false)
+const mobileMenuVisible = ref(false);
 </script>
 
 <style scoped>

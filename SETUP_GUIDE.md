@@ -28,72 +28,119 @@ mysql --version
 
 ## 🗄️ Step 1: Database Setup
 
-### Option A: Using MySQL Command Line
+### Easy Setup with Seed Script (Recommended)
+
+The easiest way to set up your database is using our automated seed script!
 
 1. **Start MySQL Server**
-   - Windows (XAMPP): Start Apache and MySQL from XAMPP Control Panel
+   - Windows (XAMPP): Start MySQL from XAMPP Control Panel
    - Windows (Standalone): MySQL should auto-start, or start from Services
    - Mac: `mysql.server start`
 
-2. **Login to MySQL**
+2. **Configure Database Credentials**
+
+   Navigate to backend folder and edit `.env` file:
+
    ```bash
-   mysql -u root -p
-   ```
-   Enter your password (default is usually empty for XAMPP)
-
-3. **Create Database and Import Schema**
-   ```sql
-   source c:/Mithuranga/flour-dude/backend/database/schema.sql
-   ```
-   
-   Or manually execute the SQL:
-   ```sql
-   CREATE DATABASE flour_dude_db;
-   USE flour_dude_db;
-   -- Then copy and paste the rest from schema.sql
+   cd c:\Mithuranga\flour-dude\backend
    ```
 
-4. **Verify Database Creation**
-   ```sql
-   SHOW DATABASES;
-   USE flour_dude_db;
-   SHOW TABLES;
-   SELECT COUNT(*) FROM products;
-   SELECT COUNT(*) FROM categories;
+   Update these values in `.env`:
+
+   ```env
+   DB_HOST=localhost
+   DB_USER=root
+   DB_PASSWORD=your_mysql_password
+   DB_NAME=flour_dude_db
+   DB_PORT=3306
    ```
 
-### Option B: Using MySQL Workbench
+   **Important**: Replace `your_mysql_password` with your actual password!
+   - XAMPP default: usually empty (leave as `DB_PASSWORD=`)
+   - Custom MySQL: enter your password
+
+3. **Install Backend Dependencies** (if not done yet)
+
+   ```bash
+   npm install
+   ```
+
+4. **Run the Seed Script**
+
+   ```bash
+   npm run seed
+   ```
+
+   This will:
+   - ✅ Create the database (`flour_dude_db`)
+   - ✅ Create tables (`categories`, `products`)
+   - ✅ Insert 5 categories
+   - ✅ Insert 25+ sample products with images
+   - ✅ Show you a summary of what was created
+
+   You should see output like:
+
+   ```
+   🌱 Starting database seeding process...
+   ✅ Database ready
+   ✅ Tables created
+   ✅ 5 categories inserted
+   ✅ 25 products inserted
+   ✨ Database seeding completed successfully! ✨
+   ```
+
+5. **Reset Database Anytime**
+
+   To clear and reseed the database:
+
+   ```bash
+   npm run db:reset
+   ```
+
+### Alternative: Manual SQL Setup
+
+If you prefer to use SQL directly:
+
+#### Option A: MySQL Command Line
+
+```bash
+mysql -u root -p
+```
+
+Then inside MySQL:
+
+```sql
+source c:/Mithuranga/flour-dude/backend/database/schema.sql
+```
+
+#### Option B: MySQL Workbench
 
 1. Open MySQL Workbench
-2. Connect to your local MySQL instance
-3. File → Open SQL Script
-4. Navigate to `c:\Mithuranga\flour-dude\backend\database\schema.sql`
-5. Click Execute (⚡ icon)
-6. Verify in the left sidebar: You should see `flour_dude_db` database
+2. File → Open SQL Script → Select `backend/database/schema.sql`
+3. Execute (⚡ icon)
 
-### Option C: Using phpMyAdmin (XAMPP Users)
+#### Option C: phpMyAdmin (XAMPP)
 
-1. Open browser: `http://localhost/phpmyadmin`
-2. Click "New" to create database
-3. Name: `flour_dude_db`, Collation: `utf8mb4_general_ci`
-4. Click "Import" tab
-5. Choose file: `c:\Mithuranga\flour-dude\backend\database\schema.sql`
-6. Click "Go"
+1. Visit `http://localhost/phpmyadmin`
+2. Import → Choose `backend/database/schema.sql`
+3. Click "Go"
 
 ---
 
 ## ⚙️ Step 2: Backend Setup
 
 1. **Navigate to Backend Directory**
+
    ```bash
    cd c:\Mithuranga\flour-dude\backend
    ```
 
 2. **Install Dependencies**
+
    ```bash
    npm install
    ```
-   
+
    This will install:
    - express (Web framework)
    - mysql2 (MySQL driver)
@@ -102,32 +149,14 @@ mysql --version
    - body-parser (Request parsing)
    - nodemon (Auto-restart server)
 
-3. **Configure Database Connection**
-   
-   Edit `.env` file in `backend/` folder:
-   
-   ```env
-   DB_HOST=localhost
-   DB_USER=root
-   DB_PASSWORD=your_mysql_password
-   DB_NAME=flour_dude_db
-   DB_PORT=3306
-   
-   PORT=5000
-   NODE_ENV=development
-   FRONTEND_URL=http://localhost:3000
-   ```
-   
-   **Important**: Replace `your_mysql_password` with your actual MySQL password!
-   - XAMPP default: usually empty (leave as `DB_PASSWORD=`)
-   - Custom MySQL: enter your password
+3. **Test Backend Server**
 
-4. **Test Backend Server**
    ```bash
    npm run dev
    ```
-   
+
    You should see:
+
    ```
    ✅ MySQL Database Connected Successfully
    🚀 Server running on http://localhost:5000
@@ -135,8 +164,8 @@ mysql --version
    🏥 Health check: http://localhost:5000/api/health
    ```
 
-5. **Test API Endpoints**
-   
+4. **Test API Endpoints**
+
    Open browser and visit:
    - `http://localhost:5000/api/health` - Should show status OK
    - `http://localhost:5000/api/products` - Should show products JSON
@@ -149,15 +178,17 @@ mysql --version
 **Keep the backend server running!** Open a new terminal.
 
 1. **Navigate to Frontend Directory**
+
    ```bash
    cd c:\Mithuranga\flour-dude\frontend
    ```
 
 2. **Install Dependencies**
+
    ```bash
    npm install
    ```
-   
+
    This will install:
    - Vue 3
    - Vue Router
@@ -171,22 +202,24 @@ mysql --version
    ⏱️ This might take 2-5 minutes
 
 3. **Start Development Server**
+
    ```bash
    npm run dev
    ```
-   
+
    You should see:
+
    ```
    VITE v5.x.x  ready in xxx ms
-   
+
    ➜  Local:   http://localhost:3000/
    ➜  Network: use --host to expose
    ```
 
 4. **Open in Browser**
-   
+
    Visit: `http://localhost:3000`
-   
+
    You should see:
    - ✅ Flour Dude homepage with hero section
    - ✅ Navigation bar
@@ -201,6 +234,7 @@ mysql --version
 Test these features:
 
 ### Homepage (`http://localhost:3000`)
+
 - [ ] Hero section displays with coffee image
 - [ ] Navigation bar is sticky
 - [ ] "Our Story" section loads
@@ -214,6 +248,7 @@ Test these features:
 - [ ] Footer has social links
 
 ### Admin Panel (`http://localhost:3000/admin`)
+
 - [ ] Products DataTable loads
 - [ ] "Add Product" button works
 - [ ] Can create a new product
@@ -224,6 +259,7 @@ Test these features:
 - [ ] Can delete category (if no products use it)
 
 ### Backend API
+
 - [ ] `http://localhost:5000/api/health` returns status OK
 - [ ] `http://localhost:5000/api/products` returns products array
 - [ ] `http://localhost:5000/api/categories` returns categories array
@@ -235,38 +271,46 @@ Test these features:
 ### Backend Issues
 
 **Error: "Access denied for user"**
+
 - Solution: Check your MySQL username/password in `.env`
 - Verify MySQL is running: Check XAMPP Control Panel or Services
 
 **Error: "ECONNREFUSED"**
+
 - Solution: MySQL server is not running
 - Start MySQL from XAMPP/Services
 
 **Error: "Unknown database 'flour_dude_db'"**
+
 - Solution: Database not created
 - Run the schema.sql file again
 
 **Port 5000 already in use**
+
 - Solution: Change PORT in `.env` to 5001 or any available port
 - Update proxy in `frontend/vite.config.js` accordingly
 
 ### Frontend Issues
 
 **Blank white page**
+
 - Check browser console for errors (F12 → Console)
 - Verify backend is running on port 5000
 - Check network tab for failed API calls
 
 **Styles not loading**
+
 - Clear browser cache (Ctrl + Shift + Delete)
 - Stop dev server (Ctrl + C) and restart: `npm run dev`
 
 **Products not loading**
+
 - Check backend is running: `http://localhost:5000/api/products`
 - Check browser console for CORS errors
 - Verify database has data: `SELECT * FROM products;` in MySQL
 
 **npm install fails**
+
 - Delete `node_modules` folder
 - Delete `package-lock.json`
 - Run `npm install` again
@@ -277,6 +321,7 @@ Test these features:
 ## 📝 Quick Commands Reference
 
 ### Backend
+
 ```bash
 # Navigate to backend
 cd c:\Mithuranga\flour-dude\backend
@@ -292,6 +337,7 @@ npm start
 ```
 
 ### Frontend
+
 ```bash
 # Navigate to frontend
 cd c:\Mithuranga\flour-dude\frontend
@@ -310,6 +356,7 @@ npm run preview
 ```
 
 ### Database
+
 ```bash
 # Login to MySQL
 mysql -u root -p

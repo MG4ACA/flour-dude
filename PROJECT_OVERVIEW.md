@@ -82,29 +82,30 @@ flour-dude/
 
 ### Frontend Routes
 
-| Route    | Component      | Description                              |
-|----------|----------------|------------------------------------------|
-| `/`      | HomeView       | Main landing page with all sections      |
-| `/admin` | AdminView      | Admin panel for managing products/cats   |
+| Route    | Component | Description                            |
+| -------- | --------- | -------------------------------------- |
+| `/`      | HomeView  | Main landing page with all sections    |
+| `/admin` | AdminView | Admin panel for managing products/cats |
 
 ### Backend API Routes
 
-| Method | Endpoint                | Description              |
-|--------|-------------------------|--------------------------|
-| GET    | `/api/health`          | Health check             |
-| GET    | `/api/products`        | Get all products         |
-| GET    | `/api/products/:id`    | Get single product       |
-| POST   | `/api/products`        | Create product           |
-| PUT    | `/api/products/:id`    | Update product           |
-| DELETE | `/api/products/:id`    | Delete product           |
-| GET    | `/api/categories`      | Get all categories       |
-| GET    | `/api/categories/:id`  | Get single category      |
-| POST   | `/api/categories`      | Create category          |
-| DELETE | `/api/categories/:id`  | Delete category          |
+| Method | Endpoint              | Description         |
+| ------ | --------------------- | ------------------- |
+| GET    | `/api/health`         | Health check        |
+| GET    | `/api/products`       | Get all products    |
+| GET    | `/api/products/:id`   | Get single product  |
+| POST   | `/api/products`       | Create product      |
+| PUT    | `/api/products/:id`   | Update product      |
+| DELETE | `/api/products/:id`   | Delete product      |
+| GET    | `/api/categories`     | Get all categories  |
+| GET    | `/api/categories/:id` | Get single category |
+| POST   | `/api/categories`     | Create category     |
+| DELETE | `/api/categories/:id` | Delete category     |
 
 ## Database Schema
 
 ### Categories Table
+
 ```sql
 - id (INT, PRIMARY KEY, AUTO_INCREMENT)
 - name (VARCHAR 100, UNIQUE)
@@ -113,6 +114,7 @@ flour-dude/
 ```
 
 ### Products Table
+
 ```sql
 - id (INT, PRIMARY KEY, AUTO_INCREMENT)
 - name (VARCHAR 200)
@@ -127,45 +129,50 @@ flour-dude/
 ## Technology Stack
 
 ### Frontend Dependencies
+
 ```json
 {
-  "vue": "^3.4.21",              // Progressive JavaScript framework
-  "vue-router": "^4.3.0",        // Official router
-  "primevue": "^3.50.0",         // UI component library
-  "primeicons": "^6.0.1",        // Icon library
-  "primeflex": "^3.3.1",         // CSS utilities
-  "axios": "^1.6.7",             // HTTP client
-  "gsap": "^3.12.5",             // Animation library
-  "tailwindcss": "^3.4.1",       // Utility-first CSS
-  "vite": "^5.1.5"               // Build tool
+  "vue": "^3.4.21", // Progressive JavaScript framework
+  "vue-router": "^4.3.0", // Official router
+  "primevue": "^3.50.0", // UI component library
+  "primeicons": "^6.0.1", // Icon library
+  "primeflex": "^3.3.1", // CSS utilities
+  "axios": "^1.6.7", // HTTP client
+  "gsap": "^3.12.5", // Animation library
+  "tailwindcss": "^3.4.1", // Utility-first CSS
+  "vite": "^5.1.5" // Build tool
 }
 ```
 
 ### Backend Dependencies
+
 ```json
 {
-  "express": "^4.18.2",          // Web framework
-  "mysql2": "^3.9.1",            // MySQL driver
-  "cors": "^2.8.5",              // CORS middleware
-  "dotenv": "^16.4.5",           // Environment variables
-  "body-parser": "^1.20.2",      // Request body parser
-  "nodemon": "^3.1.0"            // Auto-restart (dev)
+  "express": "^4.18.2", // Web framework
+  "mysql2": "^3.9.1", // MySQL driver
+  "cors": "^2.8.5", // CORS middleware
+  "dotenv": "^16.4.5", // Environment variables
+  "body-parser": "^1.20.2", // Request body parser
+  "nodemon": "^3.1.0" // Auto-restart (dev)
 }
 ```
 
 ## Design System
 
 ### Color Palette
+
 - **Background**: `#FFF1E8` - Warm, inviting cream
 - **Primary**: `#9A5A2E` - Rich coffee brown
 - **Accent**: `#D39A6A` - Caramel tone
 - **Text**: `#3E1F0F` - Dark espresso
 
 ### Typography
+
 - **Headings**: Playfair Display (serif, elegant)
 - **Body**: Inter (sans-serif, readable)
 
 ### Responsive Breakpoints
+
 - Mobile: < 640px
 - Tablet: 640px - 1024px
 - Desktop: > 1024px
@@ -175,16 +182,19 @@ flour-dude/
 ### 1. Home Page Sections
 
 **Hero Section**
+
 - Full-screen landing with background image
 - Animated title entrance
 - Call-to-action buttons with smooth scroll
 
 **Our Story**
+
 - Split layout (image + text)
 - Statistics counters
 - Scroll-triggered animations
 
 **Products Menu**
+
 - Grid layout (1/2/3 columns responsive)
 - Category dropdown filter
 - Real-time search
@@ -192,26 +202,31 @@ flour-dude/
 - Fetches from `/api/products`
 
 **Gallery**
+
 - Responsive image grid
 - Lightbox viewer with navigation
 - 8 placeholder images (Unsplash)
 
 **Testimonials**
+
 - 3-column card layout
 - Star ratings
 - Avatar initials
 
 **Location & Hours**
+
 - Google Maps embed
 - Contact information
 - Opening hours table
 
 **Contact Form**
+
 - Name, email, phone, subject, message fields
 - Form validation
 - Success toast notification
 
 **Footer**
+
 - Quick links
 - Contact info
 - Social media icons
@@ -220,6 +235,7 @@ flour-dude/
 ### 2. Admin Panel
 
 **Products Management**
+
 - DataTable with pagination
 - Search/filter
 - Add/Edit/Delete operations
@@ -227,11 +243,13 @@ flour-dude/
 - Category dropdown
 
 **Categories Management**
+
 - Simple table view
 - Add/Delete categories
 - Prevents deletion if category has products
 
 **User Experience**
+
 - Confirmation dialogs for deletions
 - Loading states
 - Success/error toast notifications
@@ -240,11 +258,13 @@ flour-dude/
 ### 3. API Features
 
 **Error Handling**
+
 - Proper HTTP status codes
 - Descriptive error messages
 - Validation on all endpoints
 
 **Database**
+
 - Connection pooling for performance
 - Prepared statements (SQL injection protection)
 - Foreign key constraints
@@ -261,6 +281,7 @@ flour-dude/
 ### Change Colors
 
 Edit `frontend/tailwind.config.js`:
+
 ```javascript
 colors: {
   vintage: {
@@ -301,6 +322,7 @@ colors: {
 ⚠️ **Current Status**: Demo/Development
 
 **Before Production:**
+
 1. Add admin authentication
 2. Input sanitization
 3. Rate limiting
